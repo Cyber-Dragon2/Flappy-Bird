@@ -10,6 +10,7 @@ def create_pipe():
     bottom_pipe =  pipe_surface.get_rect(midtop = (510,pipe_height))
     top_pipe =  pipe_surface.get_rect(midbottom = (510,pipe_height-200))
     return bottom_pipe, top_pipe
+
 def move_pipes(pipes):
     for pipe in pipes:
         pipe.centerx-=2
@@ -30,9 +31,11 @@ def check_collision():
             pygame.time.delay(1000)
             hit_sound.stop()
             return False
-    if bird_rect.top <= 0 or bird_rect.bottom >= 530:
-        if bird_rect.bottom >= 530:
-            fall_sound.play()
+    if bird_rect.top <= 0 :
+        hit_sound.play()
+        return False
+    if bird_rect.bottom >= 530:
+        fall_sound.play()
         return False
     return True
 
@@ -88,6 +91,7 @@ pygame.display.set_icon(icon)
 window.fill((0,0,0))
 pygame.display.set_caption("Flappy Bird")
 game_font = pygame.font.Font('assets/twofont.ttf',40)
+madeby_font = pygame.font.Font('assets/madeby_font.ttf',15)
 clock = pygame.time.Clock()
 
 # Game Variables
@@ -104,9 +108,9 @@ welcome = True
 bg_image = pygame.image.load("assets/images/bg-img.png").convert_alpha()
 ground = pygame.image.load("assets/images/ground.png").convert_alpha()
 message = pygame.transform.scale2x(pygame.image.load("assets/images/gameover.png").convert_alpha())
-message_rect = message.get_rect(center = (250,220))
+message_rect = message.get_rect(center = (250,320))
 welcome_screen = pygame.transform.scale2x(pygame.image.load("assets/images/message.png").convert_alpha())
-welcome_rect = welcome_screen.get_rect(center = (250, 320))
+welcome_rect = welcome_screen.get_rect(center = (250, 285))
 bird_upflap = pygame.image.load("assets/images/yellowbird-upflap.png").convert_alpha()
 bird_midflap = pygame.image.load("assets/images/yellowbird-midflap.png").convert_alpha()
 bird_downflap = pygame.image.load("assets/images/yellowbird-downflap.png").convert_alpha()
@@ -139,7 +143,7 @@ random_pipe_pos = [300,350,400,450]
 while not game_over: # Gameloop
     with open('assets/highscore.txt','r') as f:
         highscore = f.read()
-
+    # Welcome screen
     if welcome:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -147,6 +151,12 @@ while not game_over: # Gameloop
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     welcome = False
+            if event.type == BIRDFLAP:
+                if bird_index < 2:
+                    bird_index += 1
+                else:
+                    bird_index = 0
+                bird_surf,bird_rect = bird_animation()
         # Background
         window.blit(bg_image,(0,-270))
         # ground
@@ -154,8 +164,21 @@ while not game_over: # Gameloop
         if ground_x_pos <= -336:
             ground_x_pos = 0
         move_ground() 
-        # Welcome screen
+        # Welcome message
         window.blit(welcome_screen,welcome_rect)
+        # bird
+        bird_movement += gravity
+        bird_rect.centery += bird_movement
+        rotated_bird = rotate_bird(bird_surf)
+        starting_bird_surf = pygame.transform.scale2x(bird_surf)
+        starting_bird_rect = starting_bird_surf.get_rect(center = (250,380))
+        window.blit(starting_bird_surf, starting_bird_rect)
+
+        # Creator text: Amritpal Singh
+        madeby_surf = madeby_font.render(f"Creator:Amritpal Singh",1,(0,0,0))
+        madeby_rect = madeby_surf.get_rect(midright = (480,620))
+        window.blit(madeby_surf,madeby_rect)
+    # Game Starts
     else:    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
