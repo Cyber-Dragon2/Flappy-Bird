@@ -99,12 +99,14 @@ game_active = True
 highscore = 'highscore will here in while loop'
 score = 0
 can_score=True
-
+welcome = True
 # Loading required assets
 bg_image = pygame.image.load("assets/images/bg-img.png").convert_alpha()
 ground = pygame.image.load("assets/images/ground.png").convert_alpha()
 message = pygame.transform.scale2x(pygame.image.load("assets/images/gameover.png").convert_alpha())
 message_rect = message.get_rect(center = (250,220))
+welcome_screen = pygame.transform.scale2x(pygame.image.load("assets/images/message.png").convert_alpha())
+welcome_rect = welcome_screen.get_rect(center = (250, 320))
 bird_upflap = pygame.image.load("assets/images/yellowbird-upflap.png").convert_alpha()
 bird_midflap = pygame.image.load("assets/images/yellowbird-midflap.png").convert_alpha()
 bird_downflap = pygame.image.load("assets/images/yellowbird-downflap.png").convert_alpha()
@@ -137,57 +139,74 @@ random_pipe_pos = [300,350,400,450]
 while not game_over: # Gameloop
     with open('assets/highscore.txt','r') as f:
         highscore = f.read()
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game_over = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and game_active:
-                flap_sound.play()
-                gravity = 0.25
-                bird_movement = 0
-                bird_movement -= 7
-            if event.key == pygame.K_RETURN and game_active == False:
-                game_active = True
-                pipes_list.clear()
-                bird_rect.center = (100,200)
-                bird_movement = 0
-                score = 0
 
-        if event.type == SPAWNPIPE:
-            pipes_list.extend(create_pipe())
-        
-        if event.type == BIRDFLAP:
-            if bird_index < 2:
-                bird_index += 1
-            else:
-                bird_index = 0
-            bird_surf,bird_rect = bird_animation()
-        
-    window.blit(bg_image,(0,-270))
-    if game_active:
-        # bird
-        bird_movement += gravity
-        bird_rect.centery += bird_movement
-        rotated_bird = rotate_bird(bird_surf)
-        window.blit(rotated_bird,bird_rect)
-        game_active = check_collision()
-       
-        # pipe
-        pipes_list = move_pipes(pipes_list)
-        draw_pipes(pipes_list)
-        
-        pipe_score_check()
-        display_score("Active")
-    else:
-        window.blit(message,message_rect)
-        display_score("not-Active")
+    if welcome:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_over = True    
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    welcome = False
+        # Background
+        window.blit(bg_image,(0,-270))
+        # ground
+        ground_x_pos-=1
+        if ground_x_pos <= -336:
+            ground_x_pos = 0
+        move_ground() 
+        # Welcome screen
+        window.blit(welcome_screen,welcome_rect)
+    else:    
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_over = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and game_active:
+                    flap_sound.play()
+                    gravity = 0.25
+                    bird_movement = 0
+                    bird_movement -= 7
+                if event.key == pygame.K_RETURN and game_active == False:
+                    game_active = True
+                    pipes_list.clear()
+                    bird_rect.center = (100,200)
+                    bird_movement = 0
+                    score = 0
+
+            if event.type == SPAWNPIPE:
+                pipes_list.extend(create_pipe())
             
-    # ground
-    ground_x_pos-=1
-    if ground_x_pos <= -336:
-        ground_x_pos = 0
-    move_ground() 
+            if event.type == BIRDFLAP:
+                if bird_index < 2:
+                    bird_index += 1
+                else:
+                    bird_index = 0
+                bird_surf,bird_rect = bird_animation()
+            
+        window.blit(bg_image,(0,-270))
+        if game_active:
+            # bird
+            bird_movement += gravity
+            bird_rect.centery += bird_movement
+            rotated_bird = rotate_bird(bird_surf)
+            window.blit(rotated_bird,bird_rect)
+            game_active = check_collision()
+        
+            # pipe
+            pipes_list = move_pipes(pipes_list)
+            draw_pipes(pipes_list)
+            
+            pipe_score_check()
+            display_score("Active")
+        else:
+            window.blit(message,message_rect)
+            display_score("not-Active")
+                
+        # ground
+        ground_x_pos-=1
+        if ground_x_pos <= -336:
+            ground_x_pos = 0
+        move_ground() 
     pygame.display.update()
     clock.tick(120)
 
