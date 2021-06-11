@@ -72,9 +72,10 @@ def pipe_score_check():
 	
 	
     for pipe in pipes_list:
-            if 95 < pipe.centerx < 105 and can_score:
-                score += 0.2
-                point_sound.play()
+            if pipe.centerx == 100 and can_score:
+                score += 1
+                if int(score)%5 == 0:
+                    point_sound.play()
                 can_score = False
             if pipe.centerx < 0:
                 can_score = True
@@ -131,6 +132,8 @@ BIRDFLAP = pygame.USEREVENT + 1
 pygame.time.set_timer(BIRDFLAP,200)
 
 random_pipe_pos = [300,350,400,450]
+
+
 while not game_over: # Gameloop
     with open('assets/highscore.txt','r') as f:
         highscore = f.read()
