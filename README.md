@@ -5,7 +5,7 @@ This is an Desktop Game which is created in **Python progamming language** by us
 
 >Step1 :Click the link below and download zipped folder to your System
 
-[Click here](https://github.com/Cyber-Dragon2/Flappy-Bird/tree/master/bin/Game)
+[Click here](https://github.com/Cyber-Dragon2/Flappy-Bird/tree/master/bin/Game.zip)
 
 >Step2 :Open Downloaded folder in your file manager 
 
