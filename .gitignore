@@ -1,3 +1,2 @@
-/.vscode
-*/highscore.txt
-*.ttf
+.vscode/
+__pycache__/

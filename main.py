@@ -90,7 +90,7 @@ icon = pygame.image.load('assets/images/favicon.ico').convert_alpha()
 pygame.display.set_icon(icon)
 window.fill((0,0,0))
 pygame.display.set_caption("Flappy Bird")
-game_font = pygame.font.Font('assets/twofont.ttf',40)
+game_font = pygame.font.Font('assets/madeby_font.ttf',40)
 madeby_font = pygame.font.Font('assets/madeby_font.ttf',15)
 clock = pygame.time.Clock()
 
@@ -108,7 +108,7 @@ welcome = True
 bg_image = pygame.image.load("assets/images/bg-img.png").convert_alpha()
 ground = pygame.image.load("assets/images/ground.png").convert_alpha()
 message = pygame.transform.scale2x(pygame.image.load("assets/images/gameover.png").convert_alpha())
-message_rect = message.get_rect(center = (250,320))
+message_rect = message.get_rect(center = (250,200))
 welcome_screen = pygame.transform.scale2x(pygame.image.load("assets/images/message.png").convert_alpha())
 welcome_rect = welcome_screen.get_rect(center = (250, 285))
 bird_upflap = pygame.image.load("assets/images/yellowbird-upflap.png").convert_alpha()
@@ -195,6 +195,8 @@ while not game_over: # Gameloop
                     bird_rect.center = (100,200)
                     bird_movement = 0
                     score = 0
+                if event.key == pygame.K_s and game_active:
+                    score+=2
 
             if event.type == SPAWNPIPE:
                 pipes_list.extend(create_pipe())
